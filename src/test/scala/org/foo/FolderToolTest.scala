@@ -4,16 +4,19 @@ import org.junit._
 import Assert._
 
 class FolderToolTest {
+  val folderName = "target/foo-" + System.currentTimeMillis
   @Test
   def shouldGenerateSevenFiles() {
-	val folder = "target/foo-" + System.currentTimeMillis
-	val ft = new FolderActor(folder, 3)
-	ft.generateFiles(7, folder) 
-    assertEquals(7, new java.io.File(folder).list.size)
+    generate(7)
+    assertEquals(7, new java.io.File(folderName).list.size)
   }
-  
+
   @Test
   def shouldSortFiles() {
-	  val folder = "target/foo-" + System.currentTimeMillis
+  	
+  }
+  def generate(size: Int) {
+    val ft = new FolderActor(folderName, 3)
+    ft.generateFiles(7, folderName)
   }
 }
