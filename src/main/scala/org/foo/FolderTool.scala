@@ -8,6 +8,7 @@ case class Generate
 case class DeleteAll
 case class ListAll
 case class Cap
+case class ParallellDelete
 
 
 class FolderJobScheduler(foo: FolderActor, timeout: Int) extends Thread {
@@ -22,7 +23,11 @@ class FolderJobScheduler(foo: FolderActor, timeout: Int) extends Thread {
   }
 }
 class FolderActor(target: String, from: Int) extends Actor {
-
+  val workers = Array(
+		  new DeleteFileActor().start,
+		  new DeleteFileActor().start,
+		  new DeleteFileActor().start)
+  
   def act() {
     while (true) {
       receive {
@@ -32,6 +37,8 @@ class FolderActor(target: String, from: Int) extends Actor {
         case Cap => 
           val result = removeFrom(from, target)
           if (result > 0) println("Deleting " + result + " from: " + target + ", " + from + " left : " + new Date)
+        case ParallellDelete => removeFromInParallell(from, target)
+          
       }
     }
   }
@@ -55,6 +62,13 @@ class FolderActor(target: String, from: Int) extends Actor {
     val files = sort(new File(folder).listFiles)
     for (i <- 0 until files.size if i >= from) yield files(i).delete
     files.size - from
+  }
+  def removeFromInParallell(from: Int, folder: String) = {
+    val files = sort(new File(folder).listFiles)
+    for (i <- 0 until files.size if i >= from) yield {
+    	println("using worker: " + (i%3) + " to delete file: " + files(i).getName)
+    	workers(i%3) ! DeleteFile(files(i))
+    }
   }
   def sort(unsorted: Array[File]) = List.fromArray(unsorted).sort((s, t) => s.lastModified > t.lastModified)
 }
