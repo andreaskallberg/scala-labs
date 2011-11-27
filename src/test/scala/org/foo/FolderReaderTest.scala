@@ -14,9 +14,9 @@ object FolderReaderRunner {
 @RunWith(classOf[JUnitRunner]) 
 class FolderReaderTest extends FeatureSpec with GivenWhenThen {
  
-  feature("Reading database files from folder") {
+  feature("Enumerating database files from folder") {
  
-    scenario("Only sql files") {
+    scenario("Only sql files in folder") {
  
       given("a folder with 5 sql files") 
       	val folderReader = new FolderReader("src/test/resources/onlysql")        
@@ -24,7 +24,7 @@ class FolderReaderTest extends FeatureSpec with GivenWhenThen {
       	val fileList = folderReader.list()
       then("then the list size should be 5")
       	assert(fileList.length == 5)
-      and("the order should be ascending based on file name")
+      and("the order should be based on file name")
         assert(fileList(0).getName().startsWith("1"))
         assert(fileList(1).getName().startsWith("2"))
         assert(fileList(2).getName().startsWith("3"))
