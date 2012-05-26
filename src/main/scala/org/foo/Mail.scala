@@ -1,4 +1,4 @@
-package org.foo.email
+package org.foo
 import java.util.Properties
 import javax.mail._
 import javax.mail.internet._
